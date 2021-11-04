@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rapid Production Laravel Development - AmbitionPHP</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/jquery.terminal@2.x.x/js/jquery.terminal.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.x.x/css/jquery.terminal.min.css"/>
+    <style>
+        html, body {
+            margin:0;
+            height: 100%;
+            background-color: #000;
+        }
+        #terminal {
+            height:100%;
+        }
+    </style>
+    <script>
+        let enquiry = false;
+        let step = 1;
+        let enquiry_details = {
+            name: "",
+            email: "",
+            type: "",
+            details: ""
+        }
+        let validateEmail = function(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+        let greeting = "   _____         ___.   .__  __  .__             __________  ___ _____________ \n" +
+            "  /  _  \\   _____\\_ |__ |__|/  |_|__| ____   ____\\______   \\/   |   \\______   \\\n" +
+            " /  /_\\  \\ /     \\| __ \\|  \\   __\\  |/  _ \\ /    \\|     ___/    ~    \\     ___/\n" +
+            "/    |    \\  Y Y  \\ \\_\\ \\  ||  | |  (  <_> )   |  \\    |   \\    Y    /    |    \n" +
+            "\\____|__  /__|_|  /___  /__||__| |__|\\____/|___|  /____|    \\___|_  /|____|    \n" +
+            "        \\/      \\/    \\/                        \\/                \\/         \n" +
+            "                                           rapid production laravel development\n" +
+            "\n" +
+            "\n" +
+            "Please select:\n" +
+            "\n" +
+            "1. Print company mission statement\n" +
+            "2. Display developer skill sets\n" +
+            "3. Project enquiry\n" +
+            "4. Contact us\n" +
+            "0. Quit\n" +
+            "\n" +
+            "You can type -help to display this menu again at any time.\n";
+        $(function() {
+            let terminal = $('#terminal').terminal(function(command) {
+                switch(command) {
+                    case "1":
+                        if( ! enquiry )
+                            this.echo("\nOur mission statement is to kick ass.\n");
+                        else if( 3 === step ) {
+                            enquiry_details.type = 'New project';
+                            this.echo("\nTell us about your project and a team member will contact you shortly.\n");
+                            this.set_prompt('Project details: ');
+                            step++;
+                        }
+                        else if( 4 === step ) {
+                            // send enquiry
+                        }
+                    break;
+                    case "2":
+                        if( ! enquiry )
+                            this.echo("\nWe are fluent with Laravel as well as the whole Laravel Ecosystem: Vapor, Forge, Envoyer, Horizon, Nova, Echo, Lumen, Sail, Spark, Valet, Mix, Cashier, Dusk, Sanctum, Scout, Socialite, Telescope & Jetstream!\n\nWe can bring any dream to functional reality.\n");
+                        else if( 3 === step ) {
+                            enquiry_details.type = 'Existing project';
+                            this.echo("\nTell us about your project and a team member will contact you shortly.\n");
+                            this.set_prompt('Project details: ');
+                            step++;
+                        }
+                        else if( 4 === step ) {
+                            // edit name
+                        }
+                    break;
+                    case "3":
+                        if( ! enquiry ) {
+                            this.echo("\nThank you for your interest in our work. We take pride in what we create.\nTo get started please tell us your name.\n");
+                            this.set_prompt('Enter your name: ');
+                            enquiry = true;
+                        }
+                        else if( 4 === step ) {
+                            // edit email
+                        }
+                    break;
+                    case "4":
+                        if( ! enquiry )
+                            this.echo("\nYou can contact our team leader any time via steven@ambitionphp.com\n");
+                        else if( 4 === step ) {
+                            // edit type
+                        }
+                    break;
+                    case "5":
+                        if( 4 === step ) {
+                            // edit message
+                        }
+                    break
+                    case "-help":
+                        this.echo(greeting);
+                    break;
+                    default:
+                        if( !enquiry )
+                            this.echo("\n[[;red;]ReferenceError: "+command+" is not defined]\n");
+                        else {
+                            switch(step) {
+                                case 1:
+                                    if( ! command.length )
+                                        this.echo("\n[[;red;]This does not appear to be a valid name! Please try again.]\n");
+                                    else {
+                                        enquiry_details.name = command;
+                                        this.echo("\nThanks, " + enquiry_details.name.split(' ')[0] + "! What is a good email address to contact you at?\n");
+                                        this.set_prompt('Enter your email address: ');
+                                        step++;
+                                    }
+                                break;
+                                case 2:
+                                    if( ! validateEmail(command) )
+                                        this.echo("\n[[;red;]This does not appear to be a valid email address! Please try again.]\n");
+                                    else {
+                                        enquiry_details.email = command;
+                                        this.echo("\nThanks for submitting a valid email address!\n\nWhat type of project are you interested in?");
+                                        this.echo("\n1. New project\n2. Work on existing project\n");
+                                        this.set_prompt('Enter selection [1-2]: ');
+                                        step++;
+                                    }
+                                break;
+                                case 4:
+                                    if( command.length < 25 )
+                                        this.echo("\n[[;red;]Please be a little more detailed about your project.]\n");
+                                    else {
+                                        enquiry_details.details = command;
+                                        this.echo("\nEnquiry preview:");
+                                        this.echo("\nName: " + enquiry_details.name + "\nEmail: " + enquiry_details.email + "\nType: " + enquiry_details.type + "\nMessage:\n" + enquiry_details.details);
+                                        this.echo("\nHow would you like to proceed?");
+                                        this.echo("\n1. Send enquiry\n2. Edit name\n3. Edit email\n4. Change project type\n5. Edit project details\n0. Quit\n");
+                                        this.set_prompt('Enter selection [0-5]: ');
+                                    }
+                                break;
+                            }
+                        }
+                    break;
+                }
+            }, {
+                greetings: greeting
+            });
+
+            terminal.set_prompt('Enter selection [0-4]: ');
+        });
+    </script>
+</head>
+<body>
+<div id="terminal"></div>
+</body>
+</html>
